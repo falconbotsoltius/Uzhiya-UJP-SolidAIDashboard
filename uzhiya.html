@@ -763,7 +763,7 @@ let currentUser = null;
 // ─ Users store ─
 let users = JSON.parse(localStorage.getItem('uz_users') || 'null') || [
   {id:1,nama:'Super Admin',email:'admin@solid-ai.cloud',password:'admin123',role:'admin',org:'SOLID AI',status:'active'},
-  {id:2,nama:'Eric Susanto',email:'eric@soltius.co.id',password:'soltius123',role:'manager',org:'PT Soltius Indonesia',status:'active'}
+  {id:2,nama:'Saeful Anwar',email:'saefulanwar@soltius.co.id',password:'soltius123',role:'manager',org:'PT Soltius Indonesia',status:'active'}
 ];
 function saveUsers(){ localStorage.setItem('uz_users', JSON.stringify(users)); }
 
