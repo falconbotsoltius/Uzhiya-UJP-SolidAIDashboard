@@ -242,20 +242,15 @@ app.get('/api/token-tracker', async (req, res) => {
 // ─────────────────────────────────────────────
 app.get('/api/user-names', async (req, res) => {
   try {
-    // Join llm.token_tracker sessions with "SOLTIUS".auth_users
-    // auth_users: nomor_hp (matches session_id), nama, jabatan
-    const result = await pool.query(`
-      SELECT DISTINCT
-        tt.session_id,
-        COALESCE(au.nama, tt.session_id) AS nama,
-        au.jabatan
-      FROM llm.token_tracker tt
-      LEFT JOIN "SOLTIUS".auth_users au
-        ON au.nomor_hp = tt.session_id
-      WHERE tt.session_id IS NOT NULL
-      ORDER BY tt.session_id
-    `);
+    const result = await pool.query(
+      `SELECT session_id, nama, jabatan FROM public.v_user_sessions ORDER BY nama`
+    );
     res.json({ success: true, data: result.rows });
+  } catch (err) {
+    console.error('GET /api/user-names error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
   } catch (err) {
     // Fallback: return session_ids only
     try {
