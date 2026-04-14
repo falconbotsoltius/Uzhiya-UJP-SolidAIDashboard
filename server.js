@@ -242,22 +242,22 @@ app.get('/api/token-tracker', async (req, res) => {
 // ─────────────────────────────────────────────
 app.get('/api/user-names', async (req, res) => {
   try {
-    // Try joining token_tracker sessions with auth_soltius
-    // auth_soltius has: nomor_hp (= session_id), nama
+    // Join llm.token_tracker sessions with "SOLTIUS".auth_users
+    // auth_users: nomor_hp (matches session_id), nama, jabatan
     const result = await pool.query(`
       SELECT DISTINCT
         tt.session_id,
-        COALESCE(au.nama, au.name, tt.session_id) AS nama
+        COALESCE(au.nama, tt.session_id) AS nama,
+        au.jabatan
       FROM llm.token_tracker tt
-      LEFT JOIN public.auth_soltius au
+      LEFT JOIN "SOLTIUS".auth_users au
         ON au.nomor_hp = tt.session_id
-        OR au.session_id = tt.session_id
       WHERE tt.session_id IS NOT NULL
       ORDER BY tt.session_id
     `);
     res.json({ success: true, data: result.rows });
   } catch (err) {
-    // Fallback: just return distinct session_ids without names
+    // Fallback: return session_ids only
     try {
       const fallback = await pool.query(
         `SELECT DISTINCT session_id, session_id AS nama FROM llm.token_tracker WHERE session_id IS NOT NULL`

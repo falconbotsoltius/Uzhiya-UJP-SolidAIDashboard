@@ -948,11 +948,12 @@ async function fetchNameMap(){
     const d = await r.json();
     if(d && d.data){
       nameMap = {};
-      d.data.forEach(row => { if(row.session_id) nameMap[row.session_id] = row.nama || row.name || row.nomor_hp || row.session_id; });
+      d.data.forEach(row => { if(row.session_id) nameMap[row.session_id] = { nama: row.nama || row.session_id, jabatan: row.jabatan || '' }; });
     }
   }catch{ /* silent */ }
 }
-function getName(sessionId){ return nameMap[sessionId] || sessionId || '-'; }
+function getName(sessionId){ const e=nameMap[sessionId]; return e ? (e.nama||sessionId) : (sessionId||'-'); }
+function getJabatan(sessionId){ const e=nameMap[sessionId]; return e ? (e.jabatan||'') : ''; }
 
 // Also try to fetch limit from PostgreSQL bot_limit table
 async function fetchLimitFromDB(){
@@ -1089,7 +1090,7 @@ function renderRanking(){
   document.getElementById('tRanking').innerHTML=rows.length
     ?rows.map(([u,s],i)=>{
         const rc=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
-        return `<tr><td><span class="rank-badge ${rc}">${i+1}</span></td><td style="font-weight:600;font-size:.82rem">${getName(u)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--bl);font-weight:700;font-family:'JetBrains Mono',monospace">${fmtNum(s.tok)}</td><td style="color:var(--t2)">${s.msgs}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`;
+        return `<tr><td><span class="rank-badge ${rc}">${i+1}</span></td><td><div style="font-weight:600;font-size:.82rem">${getName(u)}</div><div style="font-size:.68rem;color:var(--t3)">${getJabatan(u)}</div></td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--bl);font-weight:700;font-family:'JetBrains Mono',monospace">${fmtNum(s.tok)}</td><td style="color:var(--t2)">${s.msgs}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`;
       }).join('')
     :'<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No data</td></tr>';
 }
@@ -1102,7 +1103,7 @@ function renderPerUser(){
   });
   const rows=Object.entries(map).sort((a,b)=>b[1].cost-a[1].cost).slice(0,10);
   document.getElementById('tUser').innerHTML=rows.length
-    ?rows.map(([u,s])=>`<tr><td style="font-weight:600;font-size:.82rem">${getName(u)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--t2)">${s.msgs}</td><td class="mono" style="color:var(--bl)">${fmtNum(s.p)}</td><td class="mono" style="color:var(--cy)">${fmtNum(s.c)}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`).join('')
+    ?rows.map(([u,s])=>`<tr><td><div style="font-weight:600;font-size:.82rem">${getName(u)}</div><div style="font-size:.68rem;color:var(--t3)">${getJabatan(u)}</div></td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--t2)">${s.msgs}</td><td class="mono" style="color:var(--bl)">${fmtNum(s.p)}</td><td class="mono" style="color:var(--cy)">${fmtNum(s.c)}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`).join('')
     :'<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No data</td></tr>';
 }
 
@@ -1311,7 +1312,7 @@ function renderConversations(){
         const safeOut=(d.output||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         return `<tr>
           <td class="mono" style="color:var(--t2);font-size:.7rem;white-space:nowrap">${ts}</td>
-          <td style="font-weight:600;font-size:.82rem;white-space:nowrap">${getName(d.session_id)}</td>
+          <td style="white-space:nowrap"><div style="font-weight:600;font-size:.82rem">${getName(d.session_id)}</div><div style="font-size:.68rem;color:var(--t3)">${getJabatan(d.session_id)}</div></td>
           <td class="mono" style="color:var(--bl);font-size:.72rem">${d.session_id||'-'}</td>
           <td style="min-width:180px;max-width:260px">
             <span class="cell-text${hasIn?' clamp':''}" id="ei-${idx}">${safeIn||'-'}</span>${hasIn?`<button class="see-more-btn" id="btn-ei-${idx}" onclick="toggleExpand('ei-${idx}')">See more ▼</button>`:''}
@@ -1376,7 +1377,7 @@ function renderTrivial(){
         const wasted=v.cost*(v.trivial/v.total);
         const examples=v.examples.map(e=>`<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;background:rgba(59,130,246,.08);padding:1px 6px;border-radius:3px;color:var(--t2)">${e.substring(0,18)}</span>`).join(' ');
         return `<tr>
-          <td style="font-weight:600;font-size:.82rem">${getName(sid)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${sid}</td>
+          <td><div style="font-weight:600;font-size:.82rem">${getName(sid)}</div><div style="font-size:.68rem;color:var(--t3)">${getJabatan(sid)}</div></td><td class="mono" style="color:var(--bl);font-size:.72rem">${sid}</td>
           <td class="mono">${sid}</td>
           <td style="color:var(--y);font-weight:700;font-family:'JetBrains Mono',monospace">${v.trivial}</td>
           <td style="color:var(--t2)">${v.total}</td>
