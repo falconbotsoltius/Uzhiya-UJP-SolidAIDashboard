@@ -744,7 +744,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
 // CONFIG
 // ═══════════════════════════════════════════
 const WEBHOOK  = 'https://primary-production-1b87.up.railway.app/webhook/176f23d4-71b3-41e0-9364-43bea6be01d3';
-const API_BASE = 'uzhiya-ujp-solidaidashboard-production.up.railway.app'; // uzhiya-backend server.js
+const API_BASE = 'https://uzhiya-ujp-solidaidashboard-production.up.railway.app'; // uzhiya-backend server.js
 const PAGE_SIZE = 15;
 
 // ─ State ─
@@ -1294,7 +1294,7 @@ function toggleExpand(id){
 
 function renderConversations(){
   const q=document.getElementById('srch').value.toLowerCase();
-  const data=allData.filter(d=>!q||(d.session_id||'').includes(q)||(d.chat_input||'').toLowerCase().includes(q));
+  const data=allData.filter(d=>!q||(d.session_id||'').includes(q)||(d.chat_input||'').toLowerCase().includes(q)||(getName(d.session_id)||'').toLowerCase().includes(q));
   const pages=Math.ceil(data.length/PAGE_SIZE);
   const slice=data.slice((convPage-1)*PAGE_SIZE,convPage*PAGE_SIZE);
   const off=(convPage-1)*PAGE_SIZE;
