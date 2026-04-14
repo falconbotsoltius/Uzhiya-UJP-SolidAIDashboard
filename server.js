@@ -234,6 +234,42 @@ app.get('/api/token-tracker', async (req, res) => {
   }
 });
 
+
+// ─────────────────────────────────────────────
+// GET /api/user-names
+// Join session_id → name from auth_soltius table
+// Used by dashboard to show real names instead of phone numbers
+// ─────────────────────────────────────────────
+app.get('/api/user-names', async (req, res) => {
+  try {
+    // Try joining token_tracker sessions with auth_soltius
+    // auth_soltius has: nomor_hp (= session_id), nama
+    const result = await pool.query(`
+      SELECT DISTINCT
+        tt.session_id,
+        COALESCE(au.nama, au.name, tt.session_id) AS nama
+      FROM llm.token_tracker tt
+      LEFT JOIN public.auth_soltius au
+        ON au.nomor_hp = tt.session_id
+        OR au.session_id = tt.session_id
+      WHERE tt.session_id IS NOT NULL
+      ORDER BY tt.session_id
+    `);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    // Fallback: just return distinct session_ids without names
+    try {
+      const fallback = await pool.query(
+        `SELECT DISTINCT session_id, session_id AS nama FROM llm.token_tracker WHERE session_id IS NOT NULL`
+      );
+      res.json({ success: true, data: fallback.rows });
+    } catch (err2) {
+      console.error('GET /api/user-names error:', err2.message);
+      res.status(500).json({ error: err2.message });
+    }
+  }
+});
+
 // ─────────────────────────────────────────────
 // POST /api/auth/login
 // Body: { email, password }

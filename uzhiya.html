@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UZHIYA — SOLITA Dashboard</title>
+<title>UZHIYA — AI Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -270,7 +270,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
     <div class="login-logo">
       <div class="login-logo-mark">UZ</div>
       <h1>UZHI<span>YA</span></h1>
-      <p>SOLITA Dashboard · Admin Portal</p>
+      <p>AI Dashboard · Admin Portal</p>
     </div>
     <div class="fg"><label>Email</label><input class="fi" type="email" id="lEmail" placeholder="admin@solid-ai.cloud" autocomplete="username"></div>
     <div class="fg"><label>Password</label><input class="fi" type="password" id="lPass" placeholder="••••••••" autocomplete="current-password"></div>
@@ -289,7 +289,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
       <div class="sb-logo">UZ</div>
       <div class="sb-brand-text">
         <div class="sb-name">UZHI<span>YA</span></div>
-        <div class="sb-sub">SOLITA Dashboard</div>
+        <div class="sb-sub">AI Dashboard</div>
       </div>
     </div>
     <div class="sb-nav">
@@ -297,6 +297,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
       <button class="ni ac" data-tab="usage"><span class="nico">⚡</span>Usage</button>
       <button class="ni" data-tab="logtoken"><span class="nico">📊</span>Log Token</button>
       <button class="ni" data-tab="conversations"><span class="nico">💬</span>Conversations</button>
+      <button class="ni" data-tab="upload"><span class="nico">📤</span>File Upload</button>
       <div class="nst">System</div>
       <button class="ni" data-tab="account"><span class="nico">👥</span>Account</button>
     </div>
@@ -304,8 +305,8 @@ tr:hover td{background:rgba(59,130,246,.03)}
       <div class="sb-status">
         <div class="status-dot" id="statusDot"></div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:.8rem;color:var(--t1)" id="statusText">SOLID AI Active</div>
-          <div style="font-size:.65rem;color:var(--t3);font-family:'JetBrains Mono',monospace" id="statusSub">Webhook connected</div>
+          <div style="font-weight:700;font-size:.8rem;color:var(--t1)" id="statusText">UZHIYA Active</div>
+          <div style="font-size:.65rem;color:var(--t3);font-family:'JetBrains Mono',monospace" id="statusSub">by SOLID AI</div>
         </div>
         <button style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:.9rem;padding:4px;border-radius:5px;transition:var(--tr)" title="Logout" onclick="logout()">⏻</button>
       </div>
@@ -344,8 +345,8 @@ tr:hover td{background:rgba(59,130,246,.03)}
         <div class="alert-box alert-danger hidden" id="limitAlert">
           <div class="alert-icon">🚫</div>
           <div>
-            <div class="alert-title">Limit Reached — SOLID AI Disabled</div>
-            <div class="alert-sub">Usage has hit the maximum limit. SOLID AI will not respond to new WhatsApp messages until the limit is raised or reset.</div>
+            <div class="alert-title">Limit Reached — Bot Disabled</div>
+            <div class="alert-sub">Usage has hit the maximum limit. The bot will not respond to new WhatsApp messages until the limit is raised or reset.</div>
           </div>
         </div>
 
@@ -418,11 +419,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
             <button class="btn-save-limit" onclick="saveLimit()">💾 Save Limit</button>
             <button class="btn-toggle disable" id="btnToggle" onclick="toggleBot()">⏸ Disable Bot</button>
           </div>
-          <div class="db-info-box">
-            <strong style="color:var(--t1)">💡 PostgreSQL Integration:</strong>
-            Table <code>bot_limit</code> — columns: <code>id</code>, <code>bot</code>, <code>limit</code>, <code>current_cost</code>, <code>updated_at</code>.
-            Cost is summed from <code>crossover.llm.token_tracker</code>. Changing limit re-activates bot if cost &lt; new limit. Manual disable = set <code>bot = false</code> directly in the table.
-          </div>
+          
         </div>
 
         <!-- Daily chart -->
@@ -514,14 +511,14 @@ tr:hover td{background:rgba(59,130,246,.03)}
           <div class="cd">
             <div class="cd-h"><div class="cd-t">🏆 Token Ranking</div></div>
             <div class="tw"><table>
-              <thead><tr><th>#</th><th>Session ID</th><th>Tokens</th><th>Msgs</th><th>Cost (IDR)</th></tr></thead>
+              <thead><tr><th>#</th><th>Name</th><th>Session ID</th><th>Tokens</th><th>Msgs</th><th>Cost (IDR)</th></tr></thead>
               <tbody id="tRanking"><tr><td colspan="6"><div class="ldg"><div class="spin"></div>Loading...</div></td></tr></tbody>
             </table></div>
           </div>
           <div class="cd">
             <div class="cd-h"><div class="cd-t">📋 Per-User Detail</div></div>
             <div class="tw"><table>
-              <thead><tr><th>Session ID</th><th>Msgs</th><th>Prompt</th><th>Completion</th><th>Cost</th></tr></thead>
+              <thead><tr><th>Name</th><th>Session ID</th><th>Msgs</th><th>Prompt</th><th>Completion</th><th>Cost</th></tr></thead>
               <tbody id="tUser"><tr><td colspan="6"><div class="ldg"><div class="spin"></div>Loading...</div></td></tr></tbody>
             </table></div>
           </div>
@@ -537,7 +534,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
           </div>
           <div class="tw"><table>
             <thead><tr>
-              <th>Time (WIB)</th><th>Session ID</th><th>User Input</th>
+              <th>Time (WIB)</th><th>Name</th><th>Session ID</th><th>User Input</th>
               <th>AI Response</th><th>Model</th><th>Tokens</th><th>Cost (IDR)</th>
             </tr></thead>
             <tbody id="tConv"><tr><td colspan="8"><div class="ldg"><div class="spin"></div>Loading...</div></td></tr></tbody>
@@ -560,10 +557,81 @@ tr:hover td{background:rgba(59,130,246,.03)}
           </div>
           <div class="tw"><table>
             <thead><tr>
-              <th>Session ID</th><th>Trivial</th><th>Total</th><th>% Trivial</th><th>Examples</th><th>Est. Cost Wasted</th>
+              <th>Name</th><th>Session ID</th><th>Trivial</th><th>Total</th><th>% Trivial</th><th>Examples</th><th>Est. Cost Wasted</th>
             </tr></thead>
             <tbody id="tTrivial"><tr><td colspan="7"><div class="ldg"><div class="spin"></div>Analyzing...</div></td></tr></tbody>
           </table></div>
+        </div>
+      </div>
+
+
+      <!-- ══ FILE UPLOAD ══ -->
+      <div class="tp" id="p-upload">
+        <div class="cd">
+          <div class="cd-h">
+            <div>
+              <div class="cd-t">📤 File Upload</div>
+              <div class="cd-s">Upload files to be processed by SOLID AI via n8n</div>
+            </div>
+          </div>
+
+          <!-- Upload Zone -->
+          <div id="uploadZone" onclick="document.getElementById('fileInput').click()"
+            style="border:2px dashed var(--d5);border-radius:12px;padding:48px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:20px"
+            ondragover="event.preventDefault();this.style.borderColor='var(--o)';this.style.background='rgba(59,130,246,.04)'"
+            ondragleave="this.style.borderColor='var(--d5)';this.style.background=''"
+            ondrop="handleFileDrop(event)">
+            <div style="font-size:2.5rem;margin-bottom:12px">📄</div>
+            <div style="font-weight:600;font-size:.95rem;margin-bottom:4px">Click to upload or drag & drop</div>
+            <div style="font-size:.8rem;color:var(--t3)">PDF, DOC, DOCX, XLSX, PNG, JPG — max 10MB</div>
+            <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xlsx,.png,.jpg,.jpeg" style="display:none" onchange="handleFileSelect(event)">
+          </div>
+
+          <!-- Department & Submit -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+            <div class="form-field">
+              <label>Department</label>
+              <select class="fi" id="uploadDept">
+                <option value="">— Select Department —</option>
+                <option value="HR">Human Resources (HR)</option>
+                <option value="Finance">Finance & Accounting</option>
+                <option value="IT">Information Technology (IT)</option>
+                <option value="Operations">Operations</option>
+                <option value="Sales">Sales & Marketing</option>
+                <option value="Legal">Legal & Compliance</option>
+                <option value="Management">Management</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Description (optional)</label>
+              <input class="fi" type="text" id="uploadDesc" placeholder="e.g. Q1 Report, CV Batch...">
+            </div>
+          </div>
+
+          <!-- File chips -->
+          <div id="fileChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+
+          <!-- Upload button -->
+          <div id="uploadActions" style="display:none">
+            <button class="btn-save-limit" id="btnUpload" onclick="submitUpload()">📤 Send to n8n</button>
+          </div>
+
+          <div id="uploadStatus" style="margin-top:14px"></div>
+        </div>
+
+        <!-- Upload History -->
+        <div class="cd">
+          <div class="cd-h">
+            <div class="cd-t">📋 Upload History</div>
+            <button class="btn btn-g btn-sm" onclick="loadUploadHistory()">↻ Refresh</button>
+          </div>
+          <div class="tw">
+            <table>
+              <thead><tr><th>Time</th><th>File Name</th><th>Department</th><th>Status</th><th>Description</th></tr></thead>
+              <tbody id="tUploadHistory"><tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No uploads yet</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -601,29 +669,7 @@ tr:hover td{background:rgba(59,130,246,.03)}
                 </div>
               </div>
             </div>
-            <div class="cd">
-              <div class="cd-t" style="margin-bottom:14px">🗄️ Database Config</div>
-              <div style="font-size:.78rem;color:var(--t2);line-height:2">
-                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--d5)">
-                  <span style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.68rem">TOKEN TRACKER</span>
-                  <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cy)">crossover.llm.token_tracker</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--d5)">
-                  <span style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.68rem">LIMIT TABLE</span>
-                  <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cy)">bot_limit</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--d5)">
-                  <span style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.68rem">HOST</span>
-                  <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--t2)">crossover.proxy.rlwy.net:17234</span>
-                </div>
-                <div style="padding:5px 0">
-                  <span style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.68rem">COLUMNS</span><br>
-                  <span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--t2)">id · bot · limit · current_cost · updated_at</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+                      </div>
           <!-- RIGHT: User Management -->
           <div class="cd">
             <div class="cd-h">
@@ -706,6 +752,7 @@ let limitUSD  = parseFloat(localStorage.getItem('uz_limit') || '25');
 let botActive = localStorage.getItem('uz_bot') !== 'false';
 let allData   = [];
 let filtered  = [];
+let nameMap   = {}; // session_id -> name from auth_soltius
 let period    = '7d';
 let uPeriod   = '30d';
 let convPage  = 1;
@@ -782,7 +829,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const PAGE_LABELS = {usage:'Usage',logtoken:'Log Token',conversations:'Conversations',account:'Account'};
+const PAGE_LABELS = {usage:'Usage',logtoken:'Log Token',conversations:'Conversations',upload:'File Upload',account:'Account'};
 
 function setupNav(){
   document.querySelectorAll('.ni[data-tab]').forEach(n=>{
@@ -800,6 +847,7 @@ function navTo(id){
   if(id==='usage') renderUsageChart();
   if(id==='logtoken') renderAll();
   if(id==='conversations'){ convPage=1; renderConversations(); renderTrivial(); }
+  if(id==='upload') initUpload();
   if(id==='account') renderAccountUsers();
 }
 
@@ -891,6 +939,20 @@ async function loadData(){
   btn.classList.remove('loading'); btn.textContent='↻ Refresh';
   document.getElementById('tsLabel').textContent=fmtWIBShort(new Date().toISOString());
 }
+
+// Fetch name mapping from auth_soltius via backend
+async function fetchNameMap(){
+  try{
+    const r = await fetch(`${API_BASE}/api/user-names`, {signal:AbortSignal.timeout(5000)});
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d && d.data){
+      nameMap = {};
+      d.data.forEach(row => { if(row.session_id) nameMap[row.session_id] = row.nama || row.name || row.nomor_hp || row.session_id; });
+    }
+  }catch{ /* silent */ }
+}
+function getName(sessionId){ return nameMap[sessionId] || sessionId || '-'; }
 
 // Also try to fetch limit from PostgreSQL bot_limit table
 async function fetchLimitFromDB(){
@@ -1027,7 +1089,7 @@ function renderRanking(){
   document.getElementById('tRanking').innerHTML=rows.length
     ?rows.map(([u,s],i)=>{
         const rc=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
-        return `<tr><td><span class="rank-badge ${rc}">${i+1}</span></td><td class="mono" style="color:var(--bl)">${u}</td><td style="color:var(--bl);font-weight:700;font-family:'JetBrains Mono',monospace">${fmtNum(s.tok)}</td><td style="color:var(--t2)">${s.msgs}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`;
+        return `<tr><td><span class="rank-badge ${rc}">${i+1}</span></td><td style="font-weight:600;font-size:.82rem">${getName(u)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--bl);font-weight:700;font-family:'JetBrains Mono',monospace">${fmtNum(s.tok)}</td><td style="color:var(--t2)">${s.msgs}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`;
       }).join('')
     :'<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No data</td></tr>';
 }
@@ -1040,7 +1102,7 @@ function renderPerUser(){
   });
   const rows=Object.entries(map).sort((a,b)=>b[1].cost-a[1].cost).slice(0,10);
   document.getElementById('tUser').innerHTML=rows.length
-    ?rows.map(([u,s])=>`<tr><td class="mono" style="color:var(--bl)">${u}</td><td style="color:var(--t2)">${s.msgs}</td><td class="mono" style="color:var(--bl)">${fmtNum(s.p)}</td><td class="mono" style="color:var(--cy)">${fmtNum(s.c)}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`).join('')
+    ?rows.map(([u,s])=>`<tr><td style="font-weight:600;font-size:.82rem">${getName(u)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${u}</td><td style="color:var(--t2)">${s.msgs}</td><td class="mono" style="color:var(--bl)">${fmtNum(s.p)}</td><td class="mono" style="color:var(--cy)">${fmtNum(s.c)}</td><td class="cost-val">${fmtIDR(s.cost)}</td></tr>`).join('')
     :'<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No data</td></tr>';
 }
 
@@ -1181,8 +1243,8 @@ function renderUsagePage(){
   // Sidebar status
   const bad=totalCost>=limitUSD||!botActive;
   document.getElementById('statusDot').className='status-dot'+(bad?' off':'');
-  document.getElementById('statusText').textContent=bad?'SOLID AI Inactive':'SOLID AI Active';
-  document.getElementById('statusSub').textContent=bad?'Limit reached / disabled':'Webhook connected';
+  document.getElementById('statusText').textContent=bad?'UZHIYA Inactive':'UZHIYA Active';
+  document.getElementById('statusSub').textContent=bad?'Limit reached / disabled':'by SOLID AI';
 
   renderUsageChart();
 }
@@ -1249,7 +1311,8 @@ function renderConversations(){
         const safeOut=(d.output||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         return `<tr>
           <td class="mono" style="color:var(--t2);font-size:.7rem;white-space:nowrap">${ts}</td>
-          <td class="mono" style="color:var(--bl);font-size:.75rem">${d.session_id||'-'}</td>
+          <td style="font-weight:600;font-size:.82rem;white-space:nowrap">${getName(d.session_id)}</td>
+          <td class="mono" style="color:var(--bl);font-size:.72rem">${d.session_id||'-'}</td>
           <td style="min-width:180px;max-width:260px">
             <span class="cell-text${hasIn?' clamp':''}" id="ei-${idx}">${safeIn||'-'}</span>${hasIn?`<button class="see-more-btn" id="btn-ei-${idx}" onclick="toggleExpand('ei-${idx}')">See more ▼</button>`:''}
           </td>
@@ -1261,7 +1324,7 @@ function renderConversations(){
           <td class="cost-val">${idr}</td>
         </tr>`;
       }).join('')
-    :'<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:24px">No data found</td></tr>';
+    :'<tr><td colspan="8" style="text-align:center;color:var(--t3);padding:24px">No data found</td></tr>';
 
   // Pagination
   const pag=[];
@@ -1313,7 +1376,7 @@ function renderTrivial(){
         const wasted=v.cost*(v.trivial/v.total);
         const examples=v.examples.map(e=>`<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;background:rgba(59,130,246,.08);padding:1px 6px;border-radius:3px;color:var(--t2)">${e.substring(0,18)}</span>`).join(' ');
         return `<tr>
-          <td class="mono" style="color:var(--bl);font-size:.75rem">${sid}</td>
+          <td style="font-weight:600;font-size:.82rem">${getName(sid)}</td><td class="mono" style="color:var(--bl);font-size:.72rem">${sid}</td>
           <td class="mono">${sid}</td>
           <td style="color:var(--y);font-weight:700;font-family:'JetBrains Mono',monospace">${v.trivial}</td>
           <td style="color:var(--t2)">${v.total}</td>
@@ -1411,8 +1474,107 @@ function renderAccountUsers(){
 // ═══════════════════════════════════════════
 // LOAD ALL
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════
+const N8N_UPLOAD_WEBHOOK = 'https://primary-production-1b87.up.railway.app/webhook/file-upload'; // update this
+let uploadFiles = [];
+
+function initUpload(){ uploadFiles=[]; renderFileChips(); }
+
+function handleFileSelect(e){ addFiles(Array.from(e.target.files)); }
+function handleFileDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').style.borderColor='var(--d5)';
+  document.getElementById('uploadZone').style.background='';
+  addFiles(Array.from(e.dataTransfer.files));
+}
+
+function addFiles(files){
+  const allowed=['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','image/png','image/jpeg'];
+  files.forEach(f=>{
+    if(f.size > 10*1024*1024){ toast(`⚠ ${f.name} too large (max 10MB)`,'err'); return; }
+    if(!allowed.includes(f.type) && !f.name.match(/\.(pdf|doc|docx|xlsx|png|jpg|jpeg)$/i)){ toast(`⚠ ${f.name} — unsupported format`,'err'); return; }
+    if(!uploadFiles.find(x=>x.name===f.name)) uploadFiles.push(f);
+  });
+  renderFileChips();
+}
+
+function removeFile(name){
+  uploadFiles=uploadFiles.filter(f=>f.name!==name);
+  renderFileChips();
+}
+
+function renderFileChips(){
+  const chips=document.getElementById('fileChips');
+  const actions=document.getElementById('uploadActions');
+  chips.innerHTML=uploadFiles.map(f=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--d4);border:1px solid var(--d5);border-radius:8px;font-size:.78rem">
+      <span>📄</span>
+      <span style="color:var(--t1);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
+      <span style="color:var(--t3)">${(f.size/1024).toFixed(0)}KB</span>
+      <button onclick="removeFile('${f.name.replace(/'/g,'')}')" style="background:none;border:none;cursor:pointer;color:var(--r);font-size:.85rem;padding:0;line-height:1">✕</button>
+    </div>`).join('');
+  actions.style.display=uploadFiles.length>0?'block':'none';
+}
+
+async function submitUpload(){
+  const dept=document.getElementById('uploadDept').value;
+  const desc=document.getElementById('uploadDesc').value.trim();
+  if(!dept){ toast('⚠ Please select a department','err'); return; }
+  if(uploadFiles.length===0){ toast('⚠ No files selected','err'); return; }
+
+  const btn=document.getElementById('btnUpload');
+  btn.textContent='⏳ Sending...'; btn.disabled=true;
+  const statusEl=document.getElementById('uploadStatus');
+  statusEl.innerHTML='<div style="color:var(--t2);font-size:.82rem">Sending files to n8n...</div>';
+
+  let successCount=0, failCount=0;
+  for(const file of uploadFiles){
+    try{
+      const formData=new FormData();
+      formData.append('file', file);
+      formData.append('department', dept);
+      formData.append('description', desc);
+      formData.append('uploaded_by', currentUser?.email||'unknown');
+      formData.append('uploaded_at', new Date().toISOString());
+
+      const r=await fetch(N8N_UPLOAD_WEBHOOK,{method:'POST',body:formData,signal:AbortSignal.timeout(30000)});
+      if(r.ok) successCount++; else failCount++;
+    }catch{ failCount++; }
+  }
+
+  btn.textContent='📤 Send to n8n'; btn.disabled=false;
+  if(successCount>0){
+    statusEl.innerHTML=`<div style="color:var(--g);font-size:.82rem;padding:10px 14px;background:var(--gb);border-radius:8px;border:1px solid rgba(16,185,129,.2)">✓ ${successCount} file(s) sent successfully${failCount>0?' · '+failCount+' failed':''}. n8n is processing.</div>`;
+    // Log to history
+    const hist=JSON.parse(localStorage.getItem('uz_upload_hist')||'[]');
+    uploadFiles.forEach(f=>hist.unshift({time:new Date().toISOString(),name:f.name,dept,desc,status:'Sent'}));
+    localStorage.setItem('uz_upload_hist',JSON.stringify(hist.slice(0,50)));
+    uploadFiles=[]; renderFileChips(); loadUploadHistory();
+    toast(`✓ ${successCount} file(s) sent to n8n`,'ok');
+  } else {
+    statusEl.innerHTML=`<div style="color:var(--r);font-size:.82rem;padding:10px 14px;background:var(--rb);border-radius:8px">✗ All files failed. Check n8n webhook URL.</div>`;
+    toast('⚠ Upload failed','err');
+  }
+}
+
+function loadUploadHistory(){
+  const hist=JSON.parse(localStorage.getItem('uz_upload_hist')||'[]');
+  const tb=document.getElementById('tUploadHistory');
+  if(!hist.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:24px">No uploads yet</td></tr>'; return; }
+  tb.innerHTML=hist.map(h=>`<tr>
+    <td class="mono" style="color:var(--t2);font-size:.72rem;white-space:nowrap">${fmtWIBShort(h.time)}</td>
+    <td style="font-size:.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name}</td>
+    <td><span class="badge bg-bl">${h.dept}</span></td>
+    <td><span class="badge bg-b">${h.status}</span></td>
+    <td style="color:var(--t2);font-size:.78rem">${h.desc||'—'}</td>
+  </tr>`).join('');
+}
+
 async function loadAll(){
-  await Promise.all([loadData(), fetchRate(), fetchLimitFromDB()]);
+  await Promise.all([loadData(), fetchRate(), fetchLimitFromDB(), fetchNameMap()]);
   applyPeriod(); renderUsagePage(); renderAll();
 }
 </script>
