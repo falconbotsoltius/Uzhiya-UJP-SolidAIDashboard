@@ -251,19 +251,6 @@ app.get('/api/user-names', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-  } catch (err) {
-    // Fallback: return session_ids only
-    try {
-      const fallback = await pool.query(
-        `SELECT DISTINCT session_id, session_id AS nama FROM llm.token_tracker WHERE session_id IS NOT NULL`
-      );
-      res.json({ success: true, data: fallback.rows });
-    } catch (err2) {
-      console.error('GET /api/user-names error:', err2.message);
-      res.status(500).json({ error: err2.message });
-    }
-  }
-});
 
 // ─────────────────────────────────────────────
 // POST /api/auth/login
